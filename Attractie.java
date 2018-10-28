@@ -3,9 +3,34 @@ package Kermis;
 abstract class Attractie{
 	String naam;
 	double prijs;
-	double omzet;
+	double omzet, belastingAfdracht;
 	int aantalRitten;
-	abstract void draaien();
+	
+	void draaien(Attractie at) {
+		System.out.println("\nDe attractie " + naam + " draait.");
+		omzet += prijs;
+		aantalRitten++;
+		Kassa.totaleOmzet += prijs;
+		Kassa.totaalAantalKaartjes++;
+		
+		if(at instanceof RisicoRijkeAttractie) {
+			try {
+				((RisicoRijkeAttractie)at).onderhoudsBeurt();
+			} catch (OnderhoudNodig oh){
+				System.out.println("\nTijd voor een onderhoudsbeurt...\nDruk m om een monteur te laten komen");
+				String keuze = Kermis.scanner.nextLine();
+				if(keuze.equals("m")) {
+					System.out.println("\nDe monteur heeft zijn werk gedaan en de " + naam + " kan weer draaien.");					
+				} else {
+					System.out.println("\nHet wachten is op de monteur...");
+				}
+			}
+		}
+		
+		if (at instanceof GokAttractie) {
+			((GokAttractie) at).kansSpelBelastingBetalen(at);
+		}
+	}
 }
 
 class Botsautos extends Attractie{
@@ -14,14 +39,6 @@ class Botsautos extends Attractie{
 		naam = "Botsauto's";
 		prijs = 2.50;
 	}
-	
-	void draaien() {
-		System.out.println("\nDe botsauto's rijden.");
-		omzet += prijs;
-		aantalRitten++;
-		Kermis.totaleOmzet += prijs;
-		Kermis.totaalAantalKaartjes++;
-	}	
 }
 
 class Spin extends RisicoRijkeAttractie{
@@ -31,21 +48,6 @@ class Spin extends RisicoRijkeAttractie{
 		prijs = 2.25;
 		draaiLimiet = 5;
 	}
-	
-	void draaien() {
-		System.out.println("\nDe spin draait.");
-		omzet += prijs;
-		aantalRitten++;
-		Kermis.totaleOmzet += prijs;
-		Kermis.totaalAantalKaartjes++;
-		if(aantalRitten % draaiLimiet == 0) {
-			opstellingsKeuring();
-		}
-	}
-	
-	void opstellingsKeuring() {
-		System.out.println("\nTijd voor een keuring.\nDe monteur doet zijn ding..........\nDe spin is gekeurd en kan weer draaien.");
-	}	
 }
 
 class Spiegelpaleis extends Attractie{
@@ -54,14 +56,6 @@ class Spiegelpaleis extends Attractie{
 		naam = "Spiegelpaleis";
 		prijs = 2.75;
 	}
-	
-	void draaien() {
-		System.out.println("\nHet spiegelpaleis is geopend.");
-		omzet += prijs;
-		aantalRitten++;
-		Kermis.totaleOmzet += prijs;
-		Kermis.totaalAantalKaartjes++;
-	}	
 }
 
 class Spookhuis extends Attractie{
@@ -70,14 +64,6 @@ class Spookhuis extends Attractie{
 		naam = "Spookhuis";
 		prijs = 3.20;
 	}
-
-	void draaien() {
-		System.out.println("\nHet spookhuis griezelt.");
-		omzet += prijs;
-		aantalRitten++;
-		Kermis.totaleOmzet += prijs;
-		Kermis.totaalAantalKaartjes++;
-	}	
 }
 
 class Hawaii extends RisicoRijkeAttractie{
@@ -87,35 +73,12 @@ class Hawaii extends RisicoRijkeAttractie{
 		prijs = 2.90;
 		draaiLimiet = 10;
 	}
-	
-	void draaien() {
-		System.out.println("\nDe hawaii draait.");
-		omzet += prijs;
-		aantalRitten++;
-		Kermis.totaleOmzet += prijs;
-		Kermis.totaalAantalKaartjes++;
-		if(aantalRitten % draaiLimiet == 0) {
-			opstellingsKeuring();
-		}
-	}
-	
-	void opstellingsKeuring() {
-		System.out.println("\nTijd voor een keuring.\nDe monteur doet zijn ding..........\nDe hawaii is gekeurd en kan weer draaien.");
-	}	
 }
 
-class Ladderklimmen extends Attractie{
+class Ladderklimmen extends Attractie implements GokAttractie{
 	
 	Ladderklimmen(){
 		naam = "Ladderklimmen";
-		prijs = 5.00;
+		prijs = 5.00;	
 	}
-
-	void draaien() {
-		System.out.println("\nDe ladder wankelt.");
-		omzet += prijs;
-		aantalRitten++;
-		Kermis.totaleOmzet += prijs;
-		Kermis.totaalAantalKaartjes++;
-	}	
 }

@@ -3,6 +3,17 @@ package Kermis;
 abstract class RisicoRijkeAttractie extends Attractie{
 	int draaiLimiet;
 	
-	abstract void opstellingsKeuring();
+	void opstellingsKeuring() {
+		System.out.println("De " + naam + " is goedgekeurd.");
+	}
+	
+	void onderhoudsBeurt() throws OnderhoudNodig {
+		if(aantalRitten % draaiLimiet == 0) { 
+			throw new OnderhoudNodig();
+		}
+	}
+}
 
+class OnderhoudNodig extends Exception{
+	
 }
